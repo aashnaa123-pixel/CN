@@ -1,0 +1,41 @@
+# Render Blueprint for NetRescue. Secrets are never stored here: `sync: false`
+# makes Render prompt for the value in the dashboard. See docs/DEPLOYMENT.md.
+services:
+  - type: web
+    name: netrescue
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    # Render injects $PORT; bind 0.0.0.0 so its proxy can reach the process.
+    startCommand: uvicorn apps.api.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: CORS_ORIGINS
+        value: https://netrescue-1.onrender.com
+      - key: PUBLIC_DEMO
+        value: "true"
+      - key: API_AUTH_TOKEN
+        sync: false
+      - key: API_SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+
+  - type: web
+    name: netrescue-1
+    runtime: static
+    rootDir: apps/dashboard
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    routes:
+      # Client-side routing: deep links like /features/feature-a must serve index.html.
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://netrescue.onrender.com
+      - key: NODE_VERSION
+        value: 20.18.0

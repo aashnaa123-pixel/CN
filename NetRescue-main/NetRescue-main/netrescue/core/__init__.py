@@ -1,0 +1,1 @@
+"""netrescue.core package."""

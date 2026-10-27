@@ -1,0 +1,58 @@
+# NetRescue operator console — production build served by nginx.
+#
+# Distinct from docker/Dockerfile.dashboard, which builds the public landing
+# site in apps/dashboard. Both exist: the landing site is the product's front
+# door, the console is the operator tool, and neither replaces the other.
+
+# Stage 1 — build
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+COPY apps/console/package*.json ./
+# `npm ci` needs the lockfile to match package.json. Run `npm install` in
+# apps/console once locally and commit the resulting lockfile.
+RUN npm ci
+
+COPY apps/console/ ./
+
+# Bake in a relative API base so the browser calls its own origin and nginx
+# proxies through to the API container. That avoids CORS entirely and does not
+# require the container hostname to be known at build time.
+ARG VITE_API_BASE_URL=/api
+ARG VITE_PRINCIPAL=operator
+ARG VITE_ROLE=operator
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL \
+    VITE_PRINCIPAL=$VITE_PRINCIPAL \
+    VITE_ROLE=$VITE_ROLE
+
+RUN npm run build
+
+# Stage 2 — serve
+FROM nginx:alpine
+
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Single-page app fallback, with /api and /ws proxied to the API. The WebSocket
+# upgrade headers are required or the live event stream silently fails to connect.
+RUN printf '%s\n' \
+  'server {' \
+  '    listen 80;' \
+  '    root /usr/share/nginx/html;' \
+  '    index index.html;' \
+  '    location / { try_files $uri $uri/ /index.html; }' \
+  '    location /api/ {' \
+  '        proxy_pass http://api:8000;' \
+  '        proxy_set_header Host $host;' \
+  '        proxy_read_timeout 300s;' \
+  '    }' \
+  '    location /ws/ {' \
+  '        proxy_pass http://api:8000;' \
+  '        proxy_http_version 1.1;' \
+  '        proxy_set_header Upgrade $http_upgrade;' \
+  '        proxy_set_header Connection "upgrade";' \
+  '        proxy_read_timeout 3600s;' \
+  '    }' \
+  '}' > /etc/nginx/conf.d/default.conf
+
+EXPOSE 80

@@ -1,0 +1,101 @@
+{
+ "graph": {
+  "nodes": [
+   "A",
+   "B",
+   "C",
+   "D",
+   "E",
+   "F"
+  ],
+  "links": [
+   {
+    "id": "A-B",
+    "a": "A",
+    "b": "B",
+    "cost": 2.0,
+    "delay_ms": 5,
+    "loss": 0.0,
+    "bandwidth_mbps": 100,
+    "up": true
+   },
+   {
+    "id": "A-C",
+    "a": "A",
+    "b": "C",
+    "cost": 4.0,
+    "delay_ms": 8,
+    "loss": 0.0,
+    "bandwidth_mbps": 50,
+    "up": true
+   },
+   {
+    "id": "B-D",
+    "a": "B",
+    "b": "D",
+    "cost": 3.0,
+    "delay_ms": 6,
+    "loss": 0.0,
+    "bandwidth_mbps": 100,
+    "up": true
+   },
+   {
+    "id": "B-E",
+    "a": "B",
+    "b": "E",
+    "cost": 1.0,
+    "delay_ms": 4,
+    "loss": 0.0,
+    "bandwidth_mbps": 100,
+    "up": true
+   },
+   {
+    "id": "C-E",
+    "a": "C",
+    "b": "E",
+    "cost": 2.0,
+    "delay_ms": 10,
+    "loss": 0.0,
+    "bandwidth_mbps": 50,
+    "up": true
+   },
+   {
+    "id": "D-E",
+    "a": "D",
+    "b": "E",
+    "cost": 3.0,
+    "delay_ms": 12,
+    "loss": 0.0,
+    "bandwidth_mbps": 20,
+    "up": true
+   },
+   {
+    "id": "D-F",
+    "a": "D",
+    "b": "F",
+    "cost": 1.0,
+    "delay_ms": 5,
+    "loss": 0.0,
+    "bandwidth_mbps": 100,
+    "up": true
+   },
+   {
+    "id": "E-F",
+    "a": "E",
+    "b": "F",
+    "cost": 5.0,
+    "delay_ms": 15,
+    "loss": 0.0,
+    "bandwidth_mbps": 20,
+    "up": true
+   }
+  ]
+ },
+ "source": "A",
+ "target": "F",
+ "suggested_change": {
+  "kind": "link_down",
+  "a": "B",
+  "b": "D"
+ }
+}

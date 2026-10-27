@@ -1,0 +1,139 @@
+{
+ "kind": "measurement",
+ "mode": "real_loopback",
+ "label": "REAL — measured on this machine's loopback interface (127.0.0.1)",
+ "params": {
+  "ping_count": 10,
+  "payload_bytes": 512,
+  "bulk_bytes": 100000,
+  "udp_datagrams": 100,
+  "udp_datagram_bytes": 1000
+ },
+ "method": [
+  "Sockets are real; both endpoints run in this process on 127.0.0.1 (threads).",
+  "Latency: sequential request/response round trips, timed with perf_counter, one in flight.",
+  "TCP bulk: sendall() of bulk_bytes in 64 KiB blocks, timed until the receiver's 1-byte ack.",
+  "UDP bulk: datagrams sent back to back; the receiver counts what arrives (sequence numbers).",
+  "TCP connect time is the time for connect() to return (kernel handshake)."
+ ],
+ "run_duration_s": 0.632,
+ "environment": {
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.13.14"
+ },
+ "tcp": {
+  "protocol": "tcp",
+  "connect_ms": 0.7304,
+  "latency": {
+   "n": 10,
+   "mean_ms": 0.1021,
+   "p50_ms": 0.0951,
+   "p95_ms": 0.1647,
+   "max_ms": 0.1647
+  },
+  "bulk": {
+   "bytes_sent": 100000,
+   "bytes_delivered": 100000,
+   "delivered_ratio": 1.0,
+   "elapsed_s": 0.01739,
+   "throughput_mbps": 46.0,
+   "note": "Delivery is confirmed by the receiver's end-of-transfer acknowledgement."
+  },
+  "errors": []
+ },
+ "udp": {
+  "protocol": "udp",
+  "connect_ms": 0.0,
+  "connect_note": "UDP has no connection setup.",
+  "latency": {
+   "n": 10,
+   "mean_ms": 0.0611,
+   "p50_ms": 0.0319,
+   "p95_ms": 0.1733,
+   "max_ms": 0.1733,
+   "timeouts": 0
+  },
+  "bulk": {
+   "datagrams_sent": 100,
+   "datagrams_received": 100,
+   "unique_received": 100,
+   "duplicates": 0,
+   "reordered": 0,
+   "delivered_ratio": 1.0,
+   "send_elapsed_s": 0.00117,
+   "send_rate_mbps": 683.99,
+   "delivered_mbps": 683.99,
+   "note": "The sender is not slowed by the receiver. Any shortfall in delivered_ratio is real datagram loss (e.g. receive-buffer overflow) observed on this machine; 1.0 means none was seen in this run, not that UDP is lossless."
+  },
+  "errors": []
+ },
+ "findings": [
+  "Median round-trip on loopback: TCP 0.0951 ms, UDP 0.0319 ms (small messages, this run only).",
+  "TCP connect() took 0.7304 ms; UDP needs no setup.",
+  "Bulk: TCP moved 46.0 Mbit/s with 100% delivery; UDP sent at 683.99 Mbit/s and 100.00% of datagrams arrived (0 reordered, 0 duplicated).",
+  "These figures describe loopback on this machine only; they do not show that either protocol is generally faster."
+ ],
+ "limitations": [
+  "Loopback has no propagation delay, bandwidth limit or normal packet loss; results do not predict LAN or Internet behaviour.",
+  "Sender, receiver and the Python interpreter share one machine and one GIL; absolute numbers depend on load.",
+  "No loss or delay is injected, so this mode cannot show TCP retransmission or UDP loss under impairment — use simulated mode for that.",
+  "Single run per call; repeat to see variance."
+ ],
+ "generated_at": "2026-10-25T08:00:58.145896+00:00",
+ "protocol_notes": [
+  {
+   "aspect": "Connection setup",
+   "tcp": "Three-way handshake (SYN, SYN-ACK, ACK) before any data: one extra round trip.",
+   "udp": "None. The first datagram carries data."
+  },
+  {
+   "aspect": "Reliability",
+   "tcp": "Lost segments are detected (duplicate ACKs, timeouts) and retransmitted until acknowledged.",
+   "udp": "None. A lost datagram is gone unless the application retransmits it."
+  },
+  {
+   "aspect": "Ordering",
+   "tcp": "A byte stream: the receiver gets bytes in order; a gap holds back later data.",
+   "udp": "Independent datagrams; they may arrive reordered, duplicated or not at all."
+  },
+  {
+   "aspect": "Acknowledgements",
+   "tcp": "Cumulative ACKs drive retransmission and the congestion window.",
+   "udp": "None at the protocol level."
+  },
+  {
+   "aspect": "Congestion control",
+   "tcp": "Reduces its sending rate when it infers congestion.",
+   "udp": "None built in; the sender sets its own rate."
+  },
+  {
+   "aspect": "Message boundaries",
+   "tcp": "None: the stream must be framed by the application.",
+   "udp": "Preserved: one send = one datagram."
+  }
+ ],
+ "execution": {
+  "id": "tcpudp.loopback",
+  "feature": "tcp-udp",
+  "title": "TCP and UDP loopback experiment",
+  "mode": "REAL",
+  "declared_mode": "REAL",
+  "operation": "Opens real TCP and UDP sockets on 127.0.0.1 and times connect, round trips and bulk transfer.",
+  "implementation": "netrescue.labs.tcp_udp",
+  "evidence": "netrescue.labs.tcp_udp calls socket.socket(, socket.create_connection(",
+  "model": null,
+  "limitations": [
+   "Loopback has no propagation delay, bandwidth limit or normal loss; no impairment is injected."
+  ],
+  "executed_at": "2026-10-25T08:00:58.146015+00:00",
+  "target": "127.0.0.1 (loopback; ephemeral ports)",
+  "inputs": {
+   "ping_count": 10,
+   "payload_bytes": 512,
+   "bulk_bytes": 100000,
+   "udp_datagrams": 100,
+   "udp_datagram_bytes": 1000
+  },
+  "outcome": "completed"
+ }
+}

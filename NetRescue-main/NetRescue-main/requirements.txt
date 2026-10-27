@@ -1,0 +1,17 @@
+# NetRescue — runtime dependencies (Python 3.11+)
+# Install with: pip install -r requirements.txt
+
+fastapi>=0.111.0
+uvicorn[standard]>=0.29.0
+websockets>=12.0
+sqlalchemy>=2.0.0
+psycopg[binary]>=3.1.0
+alembic>=1.13.0
+networkx>=3.3
+cryptography>=42.0.0
+pydantic>=2.7.0
+pydantic-settings>=2.2.0
+python-dotenv>=1.0.0
+matplotlib>=3.9.0
+
+# Dev / test (also install requirements-dev.txt)

@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.so
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment
+.env
+*.env.local
+
+# Certificates (never commit private keys)
+certs/*.key
+certs/*.p12
+
+# Node.js
+node_modules/
+apps/dashboard/dist/
+apps/dashboard/.vite/
+apps/console/dist/
+apps/console/.vite/
+
+# TypeScript incremental build info
+*.tsbuildinfo
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Alembic
+alembic/versions/*.py
+
+# Logs
+*.log
+logs/

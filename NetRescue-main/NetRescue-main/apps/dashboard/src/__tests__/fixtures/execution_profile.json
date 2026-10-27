@@ -1,0 +1,302 @@
+{
+ "features": {
+  "hysteresis": {
+   "operations": [
+    {
+     "id": "overlay.live",
+     "feature": "hysteresis",
+     "title": "Live forwarding overlay",
+     "mode": "REAL",
+     "declared_mode": "REAL",
+     "operation": "Starts real asyncio TCP listeners on 127.0.0.1 and forwards real packets between them; a node failure closes its listener; delivery is confirmed by the destination's acknowledgement.",
+     "implementation": "netrescue.forwarding.node",
+     "evidence": "netrescue.forwarding.node calls asyncio.start_server, asyncio.open_connection",
+     "model": null,
+     "limitations": [
+      "Loopback only: every node runs on this machine, so links have no physical delay or loss."
+     ]
+    },
+    {
+     "id": "overlay.detector_comparison",
+     "feature": "hysteresis",
+     "title": "Hysteresis vs naive detector comparison",
+     "mode": "SIMULATION",
+     "declared_mode": "SIMULATION",
+     "operation": "Replays one supplied heartbeat sequence through both detectors and counts transitions.",
+     "implementation": "netrescue.playground:run_detector_comparison",
+     "evidence": "netrescue.playground:run_detector_comparison contains no socket, subprocess or resolver calls",
+     "model": "HysteresisStateMachine vs single-threshold detector over a supplied sequence",
+     "limitations": [
+      "The heartbeat sequence is supplied by the user; no link is changed and no packet is sent."
+     ]
+    }
+   ],
+   "mode": "MIXED"
+  },
+  "multipath": {
+   "operations": [
+    {
+     "id": "transfer.multipath",
+     "feature": "multipath",
+     "title": "Multipath file transfer",
+     "mode": "SIMULATION",
+     "declared_mode": "SIMULATION",
+     "operation": "Chunks the uploaded bytes, schedules chunks over logical paths with configured delay/loss, reassembles and verifies SHA-256. The file bytes and hashing are real; the paths are not.",
+     "implementation": "netrescue.transfer.session",
+     "evidence": "netrescue.transfer.session contains no socket, subprocess or resolver calls",
+     "model": "MultipathTransferSession over in-process logical paths",
+     "limitations": [
+      "A path is a modelled delay-and-loss profile inside one process, not a socket, interface or cable.",
+      "Nothing leaves this machine."
+     ]
+    },
+    {
+     "id": "transfer.scheduler_compare",
+     "feature": "multipath",
+     "title": "Scheduler comparison",
+     "mode": "SIMULATION",
+     "declared_mode": "SIMULATION",
+     "operation": "Runs FIFO and priority schedulers over identical generated arrivals.",
+     "implementation": "netrescue.traffic.experiment",
+     "evidence": "netrescue.traffic.experiment contains no socket, subprocess or resolver calls",
+     "model": "discrete-event queueing model",
+     "limitations": [
+      "Queueing-model output, not a measurement of a wire."
+     ]
+    }
+   ],
+   "mode": "SIMULATION"
+  },
+  "diagnostics": {
+   "operations": [
+    {
+     "id": "diag.ping",
+     "feature": "diagnostics",
+     "title": "Ping",
+     "mode": "REAL",
+     "declared_mode": "REAL",
+     "operation": "Runs the operating system's ping command (argument list, no shell) and parses its output.",
+     "implementation": "netrescue.diagnostics.probes",
+     "evidence": "netrescue.diagnostics.probes calls subprocess.run(",
+     "model": null,
+     "limitations": [
+      "ICMP may be blocked by firewalls; a target with zero replies is reported as unreachable."
+     ]
+    },
+    {
+     "id": "diag.traceroute",
+     "feature": "diagnostics",
+     "title": "Route trace",
+     "mode": "REAL",
+     "declared_mode": "REAL",
+     "operation": "Runs the operating system's tracert/traceroute command and parses the hops.",
+     "implementation": "netrescue.diagnostics.probes",
+     "evidence": "netrescue.diagnostics.probes calls subprocess.run(",
+     "model": null,
+     "limitations": [
+      "Hops that do not answer ICMP appear as timeouts."
+     ]
+    },
+    {
+     "id": "diag.dns",
+     "feature": "diagnostics",
+     "title": "DNS resolution",
+     "mode": "REAL",
+     "declared_mode": "REAL",
+     "operation": "Resolves a name through the operating system resolver (socket.getaddrinfo).",
+     "implementation": "netrescue.diagnostics.probes",
+     "evidence": "netrescue.diagnostics.probes calls getaddrinfo(",
+     "model": null,
+     "limitations": [
+      "Answers may come from the OS resolver cache."
+     ]
+    },
+    {
+     "id": "diag.network",
+     "feature": "diagnostics",
+     "title": "Adapters and gateway",
+     "mode": "REAL",
+     "declared_mode": "REAL",
+     "operation": "Reads adapter, IP and gateway configuration from the operating system.",
+     "implementation": "netrescue.diagnostics.probes",
+     "evidence": "netrescue.diagnostics.probes calls subprocess.run(",
+     "model": null,
+     "limitations": [
+      "Read-only; no interface or route is modified."
+     ]
+    },
+    {
+     "id": "diag.benchmark",
+     "feature": "diagnostics",
+     "title": "Repeated ping benchmark",
+     "mode": "REAL",
+     "declared_mode": "REAL",
+     "operation": "Repeats real ping probes and aggregates latency and loss statistics.",
+     "implementation": "netrescue.diagnostics.runner:BenchmarkEngine",
+     "evidence": "netrescue.diagnostics.runner:BenchmarkEngine calls ping, spec.target",
+     "model": null,
+     "limitations": [
+      "Statistics describe the path to the chosen target at the time of the run."
+     ]
+    },
+    {
+     "id": "diag.fault_scenario",
+     "feature": "diagnostics",
+     "title": "Fault scenario",
+     "mode": "SIMULATION",
+     "declared_mode": "SIMULATION",
+     "operation": "Replays a seeded fault timeline (loss, jitter, timeout, intermittent) through a probe model.",
+     "implementation": "netrescue.diagnostics.faults:run_fault_scenario",
+     "evidence": "netrescue.diagnostics.faults:run_fault_scenario contains no socket, subprocess or resolver calls",
+     "model": "seeded fault scenario",
+     "limitations": [
+      "No packet is sent; faults are generated by the scenario definition."
+     ]
+    },
+    {
+     "id": "diag.hysteresis_sweep",
+     "feature": "diagnostics",
+     "title": "Hysteresis sweep",
+     "mode": "SIMULATION",
+     "declared_mode": "SIMULATION",
+     "operation": "Replays one identical seeded outcome sequence through detectors at several hysteresis ratios.",
+     "implementation": "netrescue.benchmark.sweep",
+     "evidence": "netrescue.benchmark.sweep contains no socket, subprocess or resolver calls",
+     "model": "seeded sequence replay over HysteresisStateMachine",
+     "limitations": [
+      "The outcome sequence is generated, not measured."
+     ]
+    },
+    {
+     "id": "diag.scheduler_comparison",
+     "feature": "diagnostics",
+     "title": "Scheduler comparison",
+     "mode": "SIMULATION",
+     "declared_mode": "SIMULATION",
+     "operation": "Runs scheduler variants over declared logical paths with the same payload.",
+     "implementation": "netrescue.transfer.session",
+     "evidence": "netrescue.transfer.session contains no socket, subprocess or resolver calls",
+     "model": "MultipathTransferSession over in-process logical paths",
+     "limitations": [
+      "Declared path profiles, not live paths."
+     ]
+    }
+   ],
+   "mode": "MIXED"
+  },
+  "routing": {
+   "operations": [
+    {
+     "id": "routing.dijkstra",
+     "feature": "routing",
+     "title": "Dijkstra shortest path",
+     "mode": "SIMULATION",
+     "declared_mode": "SIMULATION",
+     "operation": "Runs Dijkstra's algorithm on the supplied graph and records every iteration.",
+     "implementation": "netrescue.labs.routing",
+     "evidence": "netrescue.labs.routing contains no socket, subprocess or resolver calls",
+     "model": "Dijkstra (+ Yen k-shortest paths)",
+     "limitations": [
+      "A graph computation; it does not change any real routing table."
+     ]
+    }
+   ],
+   "mode": "SIMULATION"
+  },
+  "tcp": {
+   "operations": [
+    {
+     "id": "tcp.reno",
+     "feature": "tcp",
+     "title": "TCP Reno congestion model",
+     "mode": "SIMULATION",
+     "declared_mode": "SIMULATION",
+     "operation": "Discrete-event simulation of one TCP Reno flow over one bottleneck.",
+     "implementation": "netrescue.labs.tcp_cc",
+     "evidence": "netrescue.labs.tcp_cc contains no socket, subprocess or resolver calls",
+     "model": "TCP Reno (RFC 5681) + RFC 6298 timer",
+     "limitations": [
+      "Not a kernel experiment; one variant, one flow, one bottleneck."
+     ]
+    }
+   ],
+   "mode": "SIMULATION"
+  },
+  "shaping": {
+   "operations": [
+    {
+     "id": "shaping.buckets",
+     "feature": "shaping",
+     "title": "Token bucket vs leaky bucket",
+     "mode": "SIMULATION",
+     "declared_mode": "SIMULATION",
+     "operation": "Runs both shapers over one seeded packet-arrival list.",
+     "implementation": "netrescue.labs.shaping",
+     "evidence": "netrescue.labs.shaping contains no socket, subprocess or resolver calls",
+     "model": "token bucket / leaky bucket with tail-drop queue",
+     "limitations": [
+      "Models the algorithms; does not shape real traffic."
+     ]
+    }
+   ],
+   "mode": "SIMULATION"
+  },
+  "tcp-udp": {
+   "operations": [
+    {
+     "id": "tcpudp.loopback",
+     "feature": "tcp-udp",
+     "title": "TCP and UDP loopback experiment",
+     "mode": "REAL",
+     "declared_mode": "REAL",
+     "operation": "Opens real TCP and UDP sockets on 127.0.0.1 and times connect, round trips and bulk transfer.",
+     "implementation": "netrescue.labs.tcp_udp",
+     "evidence": "netrescue.labs.tcp_udp calls socket.socket(, socket.create_connection(",
+     "model": null,
+     "limitations": [
+      "Loopback has no propagation delay, bandwidth limit or normal loss; no impairment is injected."
+     ]
+    },
+    {
+     "id": "tcpudp.simulated",
+     "feature": "tcp-udp",
+     "title": "TCP vs UDP model",
+     "mode": "SIMULATION",
+     "declared_mode": "SIMULATION",
+     "operation": "Reno model versus a paced UDP sender over one modelled lossy bottleneck.",
+     "implementation": "netrescue.labs.tcp_udp:run_simulated",
+     "evidence": "netrescue.labs.tcp_udp:run_simulated contains no socket, subprocess or resolver calls",
+     "model": "TCP Reno vs paced UDP over a drop-tail bottleneck",
+     "limitations": [
+      "No sockets are used; results come from the model and its seed."
+     ]
+    }
+   ],
+   "mode": "MIXED"
+  },
+  "integration": {
+   "operations": [
+    {
+     "id": "integration.run",
+     "feature": "integration",
+     "title": "Detect → reroute → transfer",
+     "mode": "SIMULATION",
+     "declared_mode": "SIMULATION",
+     "operation": "Feeds a generated heartbeat sequence to the real HysteresisStateMachine, recalculates routes with Dijkstra and simulates the transfer with the TCP model.",
+     "implementation": "netrescue.labs.integration",
+     "evidence": "netrescue.labs.integration contains no socket, subprocess or resolver calls",
+     "model": "HysteresisStateMachine → Dijkstra → TCP Reno",
+     "limitations": [
+      "Heartbeats are generated, not probed; no operating-system route is changed."
+     ]
+    }
+   ],
+   "mode": "SIMULATION"
+  }
+ },
+ "definitions": {
+  "REAL": "The operation is performed against the operating system or a real socket on this machine.",
+  "SIMULATION": "The result is produced by a model or algorithm; no corresponding live network operation occurs.",
+  "MIXED": "The feature contains both kinds; each result section is labelled separately."
+ }
+}

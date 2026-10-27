@@ -1,0 +1,390 @@
+{
+ "kind": "simulation",
+ "params": {
+  "rate_bps": 1000000.0,
+  "bucket_bytes": 6000,
+  "queue_packets": 20,
+  "packet_bytes": 1000,
+  "duration_s": 1.0,
+  "pattern": "burst",
+  "arrival_rate_bps": 800000.0,
+  "burst_packets": 8,
+  "burst_interval_s": 1.0,
+  "burst_peak_bps": 8000000.0,
+  "seed": 7
+ },
+ "workload": {
+  "pattern": "burst",
+  "packets": 8,
+  "offered_bps": 64000.0,
+  "shaping_rate_bps": 1000000.0,
+  "overloaded": false,
+  "arrivals": [
+   0.0,
+   0.001,
+   0.002,
+   0.003,
+   0.004,
+   0.005,
+   0.006,
+   0.007
+  ]
+ },
+ "token_bucket": {
+  "algorithm": "token_bucket",
+  "summary": {
+   "offered_packets": 8,
+   "delivered_packets": 8,
+   "dropped_packets": 0,
+   "drop_rate": 0.0,
+   "throughput_bps": 64000.0,
+   "mean_delay_ms": 1.375,
+   "p95_delay_ms": 9.0,
+   "max_delay_ms": 9.0,
+   "peak_queue_packets": 2,
+   "mean_queue_packets": 0.688,
+   "last_departure_s": 0.016,
+   "peak_output_bps_100ms": 640000.0
+  },
+  "departures": [
+   [
+    0.0,
+    0.0
+   ],
+   [
+    0.001,
+    0.001
+   ],
+   [
+    0.002,
+    0.002
+   ],
+   [
+    0.003,
+    0.003
+   ],
+   [
+    0.004,
+    0.004
+   ],
+   [
+    0.005,
+    0.005
+   ],
+   [
+    0.006,
+    0.008
+   ],
+   [
+    0.007,
+    0.016
+   ]
+  ],
+  "drops": [],
+  "queue_series": [
+   [
+    0.0,
+    0
+   ],
+   [
+    0.0,
+    -1
+   ],
+   [
+    0.0,
+    0
+   ],
+   [
+    0.001,
+    -1
+   ],
+   [
+    0.001,
+    0
+   ],
+   [
+    0.002,
+    -1
+   ],
+   [
+    0.002,
+    0
+   ],
+   [
+    0.003,
+    -1
+   ],
+   [
+    0.003,
+    0
+   ],
+   [
+    0.004,
+    -1
+   ],
+   [
+    0.004,
+    0
+   ],
+   [
+    0.005,
+    -1
+   ],
+   [
+    0.005,
+    0
+   ],
+   [
+    0.006,
+    1
+   ],
+   [
+    0.007,
+    2
+   ],
+   [
+    0.008,
+    1
+   ],
+   [
+    0.016,
+    0
+   ]
+  ],
+  "token_series": [
+   [
+    0.0,
+    6000.0
+   ],
+   [
+    0.0,
+    6000.0
+   ],
+   [
+    0.0,
+    5000.0
+   ],
+   [
+    0.001,
+    5125.0
+   ],
+   [
+    0.001,
+    4125.0
+   ],
+   [
+    0.002,
+    4250.0
+   ],
+   [
+    0.002,
+    3250.0
+   ],
+   [
+    0.003,
+    3375.0
+   ],
+   [
+    0.003,
+    2375.0
+   ],
+   [
+    0.004,
+    2500.0
+   ],
+   [
+    0.004,
+    1500.0
+   ],
+   [
+    0.005,
+    1625.0
+   ],
+   [
+    0.005,
+    625.0
+   ],
+   [
+    0.006,
+    750.0
+   ],
+   [
+    0.008,
+    0.0
+   ],
+   [
+    0.008,
+    0.0
+   ],
+   [
+    0.016,
+    0.0
+   ]
+  ]
+ },
+ "leaky_bucket": {
+  "algorithm": "leaky_bucket",
+  "summary": {
+   "offered_packets": 8,
+   "delivered_packets": 8,
+   "dropped_packets": 0,
+   "drop_rate": 0.0,
+   "throughput_bps": 64000.0,
+   "mean_delay_ms": 32.5,
+   "p95_delay_ms": 57.0,
+   "max_delay_ms": 57.0,
+   "peak_queue_packets": 8,
+   "mean_queue_packets": 4.062,
+   "last_departure_s": 0.064,
+   "peak_output_bps_100ms": 640000.0
+  },
+  "departures": [
+   [
+    0.0,
+    0.008
+   ],
+   [
+    0.001,
+    0.016
+   ],
+   [
+    0.002,
+    0.024
+   ],
+   [
+    0.003,
+    0.032
+   ],
+   [
+    0.004,
+    0.04
+   ],
+   [
+    0.005,
+    0.048
+   ],
+   [
+    0.006,
+    0.056
+   ],
+   [
+    0.007,
+    0.064
+   ]
+  ],
+  "drops": [],
+  "queue_series": [
+   [
+    0.0,
+    0
+   ],
+   [
+    0.0,
+    1
+   ],
+   [
+    0.001,
+    2
+   ],
+   [
+    0.002,
+    3
+   ],
+   [
+    0.003,
+    4
+   ],
+   [
+    0.004,
+    5
+   ],
+   [
+    0.005,
+    6
+   ],
+   [
+    0.006,
+    7
+   ],
+   [
+    0.007,
+    8
+   ],
+   [
+    0.008,
+    7
+   ],
+   [
+    0.016,
+    6
+   ],
+   [
+    0.024,
+    5
+   ],
+   [
+    0.032,
+    4
+   ],
+   [
+    0.04,
+    3
+   ],
+   [
+    0.048,
+    2
+   ],
+   [
+    0.056,
+    1
+   ],
+   [
+    0.064,
+    0
+   ]
+  ],
+  "token_series": []
+ },
+ "findings": [
+  "Average offered load is below the shaping rate and nothing was dropped.",
+  "Token bucket had lower mean delay (1.375 ms vs 32.5 ms) because stored tokens let packets leave immediately."
+ ],
+ "assumptions": [
+  "Fixed packet size; the bucket is metered in bytes; the token bucket starts full.",
+  "Token bucket releases a packet instantly once enough tokens exist (infinitely fast output link), so it can pass bursts up to the bucket depth.",
+  "Leaky bucket releases packets one at a time at exactly the configured rate and never bursts.",
+  "Both use a tail-drop FIFO; 'buffered' = arrived and not yet departed; the same queue limit applies to both.",
+  "Throughput = delivered bits / max(duration, last departure). Delay = departure − arrival.",
+  "Workloads are seeded and reproducible. This models the algorithms; it does not measure a router."
+ ],
+ "generated_at": "2026-10-25T08:00:57.458569+00:00",
+ "execution": {
+  "id": "shaping.buckets",
+  "feature": "shaping",
+  "title": "Token bucket vs leaky bucket",
+  "mode": "SIMULATION",
+  "declared_mode": "SIMULATION",
+  "operation": "Runs both shapers over one seeded packet-arrival list.",
+  "implementation": "netrescue.labs.shaping",
+  "evidence": "netrescue.labs.shaping contains no socket, subprocess or resolver calls",
+  "model": "token bucket / leaky bucket with tail-drop queue",
+  "limitations": [
+   "Models the algorithms; does not shape real traffic."
+  ],
+  "executed_at": "2026-10-25T08:00:57.458605+00:00",
+  "seed": 7,
+  "inputs": {
+   "rate_bps": 1000000.0,
+   "bucket_bytes": 6000,
+   "queue_packets": 20,
+   "packet_bytes": 1000,
+   "duration_s": 1.0,
+   "pattern": "burst",
+   "arrival_rate_bps": 800000.0,
+   "burst_packets": 8,
+   "burst_interval_s": 1.0,
+   "burst_peak_bps": 8000000.0,
+   "seed": 7
+  }
+ }
+}

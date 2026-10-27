@@ -1,0 +1,74 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: "Space Mono", monospace;
+  --font-serif: "Space Mono", monospace;
+  --font-mono: "Space Mono", monospace;
+  --bg: #000000;
+  --fg: #ffffff;
+  --fg-muted-40: rgba(255,255,255,0.40);
+  --fg-muted-45: rgba(255,255,255,0.45);
+  --fg-muted-50: rgba(255,255,255,0.50);
+  --fg-muted-60: rgba(255,255,255,0.60);
+  --pill-bg: rgba(255,255,255,0.15);
+  --pill-bg-hover: rgba(255,255,255,0.22);
+  --accent-purple: #8E7F94;
+  --border-subtle: rgba(255,255,255,0.10);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  background: #000;
+  color: #fff;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: "Space Mono", monospace;
+}
+
+/* Visible keyboard focus everywhere (WCAG 2.4.7). */
+:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* Smooth scrolling for sidebar nav */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection */
+::selection {
+  background: rgba(142, 127, 148, 0.3);
+  color: #fff;
+}
+
+/* Native select dropdowns.
+   The option list of a <select> is painted by the operating system, not by the
+   page, so on Windows it opens as a white list with a blue highlight over our
+   black panels. `color-scheme: dark` asks the platform for its dark popup; the
+   explicit option colours keep it black on white where that is ignored. */
+select {
+  color-scheme: dark;
+}
+
+select option,
+select optgroup {
+  background-color: #000;
+  color: #fff;
+}
+
+/* Lenis smooth-scroll utilities (harmless when Lenis is not mounted) */
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+.lenis.lenis-scrolling iframe { pointer-events: none; }
